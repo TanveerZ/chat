@@ -21,6 +21,7 @@ var currentUTCDate = globalVariables.crntDate;
 var datetime = require('node-datetime');
 var config = require('../../../../app/config')
 var Helper = require("../../../helper/commen");
+var socketHelper = require("../../../helper/socketHelper");
 require('./../../../../globalfunctions');
 
  var usersController = {    
@@ -83,7 +84,7 @@ require('./../../../../globalfunctions');
                 attributes: ['user_id','password','email']});    
                 var ress= isObjEmpty(isEmailExsists);
 
-            if(ress==true)
+            if(ress==false)
             {
                 var hashPassword = isEmailExsists.dataValues.password.toString();            
                 await  bcrypt.compare(NewUser.password,hashPassword,async(err,isMatch)=>{
@@ -94,16 +95,22 @@ require('./../../../../globalfunctions');
                     }
                     if(isMatch){
                         db.connection.query("SELECT user_master.* FROM `user_master` where user_master.user_id= "+isEmailExsists.dataValues.user_id, { type: Sequelize.QueryTypes.SELECT})
-                        .then((response) => {
+                        .then(async(response) => {
+                            var user_id = isEmailExsists.dataValues.user_id;
+                            const token = await jwt.sign(user_id, db.secret, {})
                             let send_data = {message:"User login successfully", token: 'JWT '+token,data:response[0]};
                                 res.status(200).json(send_data);
                         })
                     }
+                    else {
+                        // response is OutgoingMessage object that server response http request
+                        return res.status(200).json({success: false, message: 'passwords do not match'});
+                      }
                 });
 
             }
             else{
-                let send_data = {message:"User Does't exists", error:err};
+                let send_data = {message:"User Does't exists"};
                         res.status(200).json(send_data);
             }
         
@@ -114,7 +121,7 @@ require('./../../../../globalfunctions');
         var userLog={
             updated_at: currentUTCDate
              };
-        var logout= await TBL_PROFILE.update(userLog,{where:{user_id:userId}});
+       // var logout= await TBL_PROFILE.update(userLog,{where:{user_id:userId}});
         await jwt.sign(userId, db.secret, {expiresIn: 1});
         var send_data={message:"You logged out successfully."};  
         res.status(200).json(send_data);
@@ -154,28 +161,14 @@ require('./../../../../globalfunctions');
        
         ////console.log("Fire Socket trade done.")
 
-        var pair_id=req.params.id;
+        var user_id=req.params.id;
         /**
          *  Call Buy socket to emit data 
          *  Dev-DP 24-april-2019
          */
-        await socketHelper.buySocket(pair_id,10);
+        await socketHelper.userchat(user_id,10);
 
-        /**
-         *  Call Sell socket to emit data 
-         *  Dev-DP 24-april-2019
-         */
-        await socketHelper.sellSocket(pair_id,10)
-
-        /**
-         *  Call Trade socket to emit data 
-         *  Dev-DP 24-april-2019
-         */
-        await socketHelper.tradeSocket(pair_id,10)
-                      
-        
-        // res.io.of('/exchange').emit("tradeDone", {"status" : "end"});
-        // res.status(200).json({message : "Firing socket to send trade alert.."});
+         res.status(200).json({message : "Firing socket to send user chat alert.."});
     })
    
 };

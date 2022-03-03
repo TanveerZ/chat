@@ -30,7 +30,7 @@ router.use(expressValidator({
 }));
 
 router.post('/register', userController.register);
-router.post('/login',[userMiddleware.encryption_request],userValidator.login, userController.login);
+router.post('/login', userController.login);
 
 router.post('/userlisting/:id',userController.userListing);
 

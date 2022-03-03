@@ -20,10 +20,10 @@ module.exports = {
      * @author Tanveer Singh
      * @since 24-April-2019
      */
-    chatSocket : async(user_id) => {
+     userchat : async(user_id) => {
         // var emitName = 'pairs';
         // var pairsList = await Helper.pairsList(currency_id); 
-        // global.socketConnection.of('/exchange').emit(emitName,pairsList);  
+         global.socketConnection.of('/exchange').emit('name','hi');  
             
        
     }
