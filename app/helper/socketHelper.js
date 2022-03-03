@@ -3,8 +3,8 @@
  * Below is the list of helper function which you can access according to method
  * Please provide parameter if any route required to access correct data
  * 
- * @author Durga Parshad
- * @since 24-April-2019
+ * @author Tanveer Singh
+ * @since 03-March-2022
 */
 var Sequelize = require('sequelize');
 var dbConfig = require("../../config/db");
@@ -23,7 +23,7 @@ module.exports = {
      userchat : async(user_id) => {
         // var emitName = 'pairs';
         // var pairsList = await Helper.pairsList(currency_id); 
-         global.socketConnection.of('/exchange').emit('name','hi');  
+         global.socketConnection.of('/userchat').emit("userchat", "everyone"); 
             
        
     }

@@ -84,4 +84,18 @@ app.use(function (err, req, res, next) {
 server.listen(PORT, () => {
   console.log(`server has been started at port ${PORT}`)
 })
+io.on('connection', (socket) => {
+    // add handlers for socket events
+    //const socket = io();
+    socket.on('chat', message => {
+        console.log('From client: ', message);
+        socket.emit('chatready', message => {"I'm ready"});
+      })
+    console.log("user b connected");
+    io.of('/userchat').emit("userchat", "everyone"); 
+    
+});
+io.on("chat", message => {
+    console.log('From server: ', message)
+  })
 module.exports.app = express;
