@@ -34,9 +34,12 @@ require('./../../../../globalfunctions');
          
                 var first_name=(req.body.first_name)!=""?req.body.first_name:'';
                 var last_name=(req.body.last_name)!=""?req.body.last_name:''; 
-                var selIfExsist="SELECT user_master.user_id FROM `user_master where user_master.email='"+emailUser ;
-                var selIfExsisted=await db.connection.query(selIfExsist, { type: Sequelize.QueryTypes.SELECT})
-                var ress= isObjEmpty(selIfExsisted);
+               
+
+                var isEmailExsists= await TBL_USER.findOne({where: {email:emailUser},
+                    attributes: ['user_id','password','email']});    
+                    var ress= isObjEmpty(isEmailExsists);
+                console.log(ress);
                 if(ress!=true)
                 {
                         let send_data = {message:"These details have already used."};
@@ -53,16 +56,20 @@ require('./../../../../globalfunctions');
                         created_at : currentUTCDate
                     }
                     try {
-                        var userdata = await TBL_USER.create(NewUser);    
+                        var userdata = await TBL_USER.create(NewUser); 
+                        db.connection.query("SELECT user_master.* FROM user_master where user_master.user_id= "+userdata.dataValues.user_id, { type: Sequelize.QueryTypes.SELECT})
+                .then( async response => {
+                    var user_id = userdata.dataValues.user_id;
+                    const token = await jwt.sign(user_id, db.secret, {})
+                    let send_data = {success:true,status:200,message:"User registered successfully, Please verify your email, verification email has been sent to ("+emailUser+").", token: 'JWT '+token,data:response[0]};
+                    return res.status(200).json(send_data);           
+                })    
                     } catch (error) {
-                        //console.log("Error" , error);
+                        let send_data = {success:true,status:401,message:error};
+                        return res.status(401).json(send_data); 
                     }
                 }
-                   db.connection.query("SELECT user_master.* FROM `user_master` where user_master.user_id= "+userObj.dataValues.user_id, { type: Sequelize.QueryTypes.SELECT})
-                .then( async response => {
-                    let send_data = {success:true,status:200,message:"User registered successfully, Please verify your email, verification email has been sent to ("+emailUser+").", token: 'JWT '+token,data:response[0]};
-                    return res.status(201).json(send_data);           
-                }) 
+                   
              
         
     }), 

@@ -7,7 +7,7 @@ var config = require('../app/config')
     connection : new Sequelize(config.mysqlDB, config.mysqlUSER, config.mysqlPASS,{
         dialect: 'mysql',
         host: config.mysqlHOST, 
-        operatorsAliases: false,
+        operatorsAliases: 0,
         logging: false,
         define: {
                 charset: 'utf8',
@@ -35,66 +35,6 @@ var config = require('../app/config')
               freezeTableName: true,
               underscored: true,
               timestamps: true
-        }
-      })
-    }, 
-    bot_connection : ()=>{
-      return new Sequelize(config.mysqlDBBOT, config.mysqlUSERBOT,config.mysqlPASSBOT,{
-        dialect: 'mysql',
-        host: config.mysqlHOSTBOT, 
-        operatorsAliases: false,
-        logging: false,
-        define: {
-              charset: 'utf8',
-              collate: 'utf8_general_ci',
-              freezeTableName: true,
-              underscored: true,
-              timestamps: true
-        },
-        pool: {
-          max: 20,
-          min: 0,
-          acquire: 2000000,
-          idle: 2000000
-        }
-      });
-    }, 
-    stage_logs : ()=>{
-      return new Sequelize(config.save_logs.db, config.save_logs.user,config.save_logs.pass,{
-        dialect: 'mysql',
-        host: config.save_logs.host, 
-        operatorsAliases: false,
-        logging: false,
-          define: {
-                charset: 'utf8',
-                collate: 'utf8_general_ci',
-                freezeTableName: true,
-                underscored: true,
-                timestamps: true
-          }
-        });
-    },
-    graph_connection : () => {
-      return new Sequelize(config.mysqlDB, config.mysqlUSER,config.mysqlPASS,{
-        dialect: 'mysql',
-        host: config.mysqlHOST, 
-        operatorsAliases: false,
-        logging: false,
-        dialectOptions: {
-          connectTimeout: 60000
-        },
-        define: {
-              charset: 'utf8',
-              collate: 'utf8_general_ci',
-              freezeTableName: true,
-              underscored: true,
-              timestamps: true
-        },
-        pool: {
-          max: 20,
-          min: 0,
-          acquire: 2000000,
-          idle: 2000000
         }
       })
     },      

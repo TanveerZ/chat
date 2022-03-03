@@ -7,7 +7,7 @@ var jwt = require('jsonwebtoken');
 var userValidator = require('./validations/user_validator');
 var expressValidator = require('express-validator');
 var userMiddleware=require('../../../middlewares/request_enc');
-Users = db.connection.define('member_master');
+Users = db.connection.define('user_master');
 
 router.use(expressValidator({
     customValidators: {
@@ -19,7 +19,7 @@ router.use(expressValidator({
         ////console.log(checkObj);
         return new Promise((resolve, reject) => {
             Users.findOne({where:checkObj,
-                attributes: ['member_id']})
+                attributes: ['user_id']})
             .then(response=>{
                 if(response == null) { resolve(); }
                 else{reject(); } })
@@ -29,7 +29,7 @@ router.use(expressValidator({
     } }
 }));
 
-router.post('/register',[userMiddleware.encryption_request],userValidator.register, userController.register);
+router.post('/register', userController.register);
 router.post('/login',[userMiddleware.encryption_request],userValidator.login, userController.login);
 
 router.post('/userlisting/:id',userController.userListing);

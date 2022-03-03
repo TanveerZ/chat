@@ -4,12 +4,13 @@ const cors = require('cors');
 const path = require('path');
 const passport = require('passport');
 const expressValidator = require('express-validator');
+//var session = require('express-session');
 var db = require('./config/db');
 var fs = require('fs');
 var url = require('url');
 var bodyparser = require('body-parser');
 var userRoute = require('./app/modules/users/userRoute');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 var server = require('http').createServer(app);  
 var io = require('socket.io')(server);
 require('./socket')(io)
@@ -17,6 +18,15 @@ global.socketConnection = io;
 
 //middleware for cors (cross origin requests)
 app.use(cors()); 
+
+var session = require('express-session');
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  }))
+
 app.use(passport.initialize());
 app.use(passport.session());
 

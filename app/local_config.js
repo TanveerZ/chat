@@ -17,7 +17,7 @@ module.exports = {
     'AdminRef':'adminref',
     'UserRef':'userref',
     'mysqlHOST':'localhost',
-    'mysqlDB':'chatbotdb',
+    'mysqlDB':'chatdb',
     'mysqlUSER':'root',
     'mysqlPASS':'',
     'mongoDB':'mongoDb',

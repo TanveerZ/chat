@@ -45,6 +45,10 @@ var User = db.connection.define('user_master', {
     created_at: {
         type: 'TIMESTAMP',
         allowNull: false
+    },
+    updated_at: {
+        type: 'TIMESTAMP',
+        allowNull: true
     }
 });
 module.exports = User;
